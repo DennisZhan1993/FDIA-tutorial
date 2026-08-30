@@ -1188,37 +1188,6 @@ docs/exercises.md
 
 ---
 
-# Part XI. Roadmap
-
-Planned extensions:
-
-### V0.2
-Monte Carlo experiments:
-
-- false-alarm probability;
-- detection probability;
-- attack-magnitude sensitivity;
-- noise sensitivity;
-- model mismatch.
-
-### V0.3
-Introductory data-driven detection:
-
-- Isolation Forest;
-- Random Forest;
-- detection metrics and ROC curves.
-
-### V0.4
-Larger benchmark systems:
-
-- IEEE 14-bus;
-- pandapower-based state estimation.
-
-### V1.0
-Complete graduate-level FDI teaching package.
-
----
-
 # References
 
 1. Y. Liu, P. Ning, and M. K. Reiter, “False Data Injection Attacks against State Estimation in Electric Power Grids,” *Proceedings of the 16th ACM Conference on Computer and Communications Security (CCS)*, pp. 21–32, 2009. DOI: `10.1145/1653662.1653666`.
