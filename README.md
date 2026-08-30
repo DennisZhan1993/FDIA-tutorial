@@ -1011,7 +1011,7 @@ Geometrically, the attack lies in the column space of $H$:
 
 ```
 \boxed{
-a\in\operatorname{Col}(H).
+a\in\mathrm{Col}(H).
 }
 ```
 
@@ -1352,7 +1352,7 @@ Students should be able to answer the following after V0.1:
 2. Why is $H$ a $5\times2$ matrix?
 3. Why are the residual $r$ and measurement noise $e$ not identical?
 4. Why does changing only $P_{12}$ create physical inconsistency?
-5. What does $a\in\operatorname{Col}(H)$ mean?
+5. What does $a\in\mathrm{Col}(H)$ mean?
 6. Why does $a=Hc$ imply $\hat{x}^a-\hat{x}=c$?
 7. Under which assumptions does $r^a=r$ hold?
 8. Why does $\alpha=0.05$ not mean that a normal sample can never trigger an alarm?
