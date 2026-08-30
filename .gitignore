@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+*.pyc
+data/generated/*
+!data/generated/.gitkeep
+figures/*
+!figures/.gitkeep
