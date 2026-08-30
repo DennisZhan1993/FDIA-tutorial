@@ -9,7 +9,7 @@
 
 This repository is a small and transparent teaching project for understanding the complete chain
 
-$
+\[
 \boxed{
 \text{Power-system model}
 \rightarrow
@@ -21,7 +21,8 @@ $
 \rightarrow
 \text{Bad-data detection}
 }
-$
+\]
+
 
 After completing the learning section, you should be able to:
 
