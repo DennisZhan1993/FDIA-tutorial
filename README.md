@@ -852,7 +852,7 @@ This is the key mathematical reason why a model-consistent attack can evade this
 
 ---
 
-# Part VI. V0.1 experiments
+# Part VI. Experiments
 
 ## 14. Notebook 01 — DC State Estimation
 
