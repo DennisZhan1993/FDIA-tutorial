@@ -32,8 +32,3 @@ Let the attacker construct an approximate matrix
 \]
 
 and use \(a=\tilde{H}c\). Study how model mismatch changes the residual.
-
-## Exercise 6 — Research extension
-
-Design a Monte Carlo experiment that reports detection probability and false
-alarm probability versus attack magnitude.
