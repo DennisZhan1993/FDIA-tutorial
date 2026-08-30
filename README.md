@@ -69,11 +69,7 @@ FDIA-tutorial/
 ├── docs/
 │   ├── theory.md
 │   └── exercises.md
-│
-├── data/
-│   └── generated/
-│
-└── figures/
+
 ```
 
 The **Notebook files** are used for step-by-step teaching.  
