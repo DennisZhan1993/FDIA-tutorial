@@ -1,6 +1,5 @@
 # Power-System False Data Injection (FDI) Tutorial
 
-> **Version:** V0.1  
 > **Audience:** Graduate students beginning research on power-system cyber security, state estimation, and false-data injection attacks  
 > **Scope:** Synthetic, offline, 3-bus DC state-estimation experiments only. This repository is intended for classroom learning and defensive research.
 
@@ -24,7 +23,7 @@ This repository is a small and transparent teaching project for understanding th
 }
 \]
 
-After completing V0.1, you should be able to:
+After completing the learning section, you should be able to:
 
 1. explain the DC measurement model \(z=Hx+e\);
 2. derive the 3-bus measurement matrix \(H\);
