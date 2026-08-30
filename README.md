@@ -1,14 +1,12 @@
-# Power-System False Data Injection (FDI) Tutorial
+# Tutorial on False Data Injection Attacks in Power Systems
 
-> **Version:** V0.1  
-> **Audience:** Graduate students beginning research on power-system cyber security, state estimation, and false-data injection attacks  
-> **Scope:** Synthetic, offline, 3-bus DC state-estimation experiments only. This repository is intended for classroom learning and defensive research.
-
+> **Audience:** Graduate students beginning research on cybersecurity of power sysetems, state estimation, and false-data injection (FDI) attacks
+> > **Scope:** Synthetic 3-bus DC state-estimation experiments. This repository is intended for learning how FDI attacks are formulated, how model-consistent FDI attacks can evade conventional residual-based bad-data detection under idealized assumptions, and how residual-based detection is implemented. 
 ---
 
 ## 1. What will you learn?
 
-This repository is a small and transparent teaching project for understanding the complete chain
+This repository is a small teaching project for understanding the complete chain
 
 
 ```math
@@ -26,7 +24,7 @@ This repository is a small and transparent teaching project for understanding th
 ```
 
 
-After completing V0.1, you should be able to:
+After completing this small experiment, you should be able to:
 
 1. explain the DC measurement model $z=Hx+e$;
 2. derive the 3-bus measurement matrix $H$;
