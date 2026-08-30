@@ -693,7 +693,7 @@ and the residual-based detector raises an alarm.
 
 ---
 
-# Part V. Model-consistent / structured FDI
+# Part V. Structured FDI
 
 ## 11. Classical construction $a=Hc$
 
