@@ -1009,12 +1009,11 @@ r^a=r.
 Geometrically, the attack lies in the column space of $H$:
 
 
-$
+```
 \boxed{
 a\in\operatorname{Col}(H).
 }
-$$
-
+```
 
 This is the key mathematical reason why a model-consistent attack can evade this ideal residual-only detector.
 
