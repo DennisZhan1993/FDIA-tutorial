@@ -1,5 +1,6 @@
 # Power-System False Data Injection (FDI) Tutorial
 
+> **Version:** V0.1  
 > **Audience:** Graduate students beginning research on power-system cyber security, state estimation, and false-data injection attacks  
 > **Scope:** Synthetic, offline, 3-bus DC state-estimation experiments only. This repository is intended for classroom learning and defensive research.
 
@@ -9,7 +10,8 @@
 
 This repository is a small and transparent teaching project for understanding the complete chain
 
-\[
+
+$$
 \boxed{
 \text{Power-system model}
 \rightarrow
@@ -21,18 +23,18 @@ This repository is a small and transparent teaching project for understanding th
 \rightarrow
 \text{Bad-data detection}
 }
-\]
+$$
 
 
-After completing the learning section, you should be able to:
+After completing V0.1, you should be able to:
 
-1. explain the DC measurement model \(z=Hx+e\);
-2. derive the 3-bus measurement matrix \(H\);
+1. explain the DC measurement model $z=Hx+e$;
+2. derive the 3-bus measurement matrix $H$;
 3. implement weighted least-squares (WLS) state estimation;
-4. understand the residual \(r=z-H\hat{x}\);
+4. understand the residual $r=z-H\hat{x}$;
 5. construct a simple single-measurement perturbation;
-6. construct the classical model-consistent attack \(a=Hc\);
-7. prove why \(a=Hc\) preserves the WLS residual in the ideal linear model;
+6. construct the classical model-consistent attack $a=Hc$;
+7. prove why $a=Hc$ preserves the WLS residual in the ideal linear model;
 8. implement a chi-square residual-based bad-data detector;
 9. explain why ordinary data corruption is easy to detect but a model-consistent FDI can evade a residual-only detector under ideal assumptions.
 
@@ -97,27 +99,34 @@ We begin with a deliberately small 3-bus network:
 
 The three transmission lines are
 
-\[
+
+$$
 (1,2),\qquad (1,3),\qquad (2,3).
-\]
+$$
+
 
 The line susceptances are set to
 
-\[
+
+$$
 b_{12}=10,\qquad
 b_{13}=5,\qquad
 b_{23}=8.
-\]
+$$
+
 
 Bus 1 is selected as the reference bus:
 
-\[
+
+$$
 \theta_1=0.
-\]
+$$
+
 
 Therefore, only two voltage phase angles need to be estimated:
 
-\[
+
+$$
 \boxed{
 x=
 \begin{bmatrix}
@@ -125,24 +134,29 @@ x=
 \theta_3
 \end{bmatrix}
 }
-\]
+$$
+
 
 and the number of states is
 
-\[
+
+$$
 n=2.
-\]
+$$
+
 
 In this teaching example, the simulated true state is
 
-\[
+
+$$
 x_{\text{true}}
 =
 \begin{bmatrix}
 -0.04\\
 -0.06
 \end{bmatrix}.
-\]
+$$
+
 
 ---
 
@@ -150,7 +164,8 @@ x_{\text{true}}
 
 Five active-power measurements are used:
 
-\[
+
+$$
 \boxed{
 z=
 \begin{bmatrix}
@@ -161,157 +176,193 @@ P_2\\
 P_3
 \end{bmatrix}
 }
-\]
+$$
+
 
 where
 
-- \(P_{12}\): active-power flow from bus 1 to bus 2;
-- \(P_{13}\): active-power flow from bus 1 to bus 3;
-- \(P_{23}\): active-power flow from bus 2 to bus 3;
-- \(P_2\): active-power injection at bus 2;
-- \(P_3\): active-power injection at bus 3.
+- $P_{12}$: active-power flow from bus 1 to bus 2;
+- $P_{13}$: active-power flow from bus 1 to bus 3;
+- $P_{23}$: active-power flow from bus 2 to bus 3;
+- $P_2$: active-power injection at bus 2;
+- $P_3$: active-power injection at bus 3.
 
 Thus,
 
-\[
+
+$$
 m=5
-\]
+$$
+
 
 measurements are used to estimate
 
-\[
+
+$$
 n=2
-\]
+$$
+
 
 states.
 
 ---
 
-## 5. Derivation of the measurement matrix \(H\)
+## 5. Derivation of the measurement matrix $H$
 
 Under the DC power-flow approximation,
 
-\[
+
+$$
 P_{ij}=b_{ij}(\theta_i-\theta_j).
-\]
+$$
 
-### 5.1 Measurement \(P_{12}\)
 
-Because \(\theta_1=0\),
+### 5.1 Measurement $P_{12}$
 
-\[
+Because $\theta_1=0$,
+
+
+$$
 P_{12}
 =
 10(\theta_1-\theta_2)
 =
 -10\theta_2.
-\]
+$$
 
-Hence the first row of \(H\) is
 
-\[
+Hence the first row of $H$ is
+
+
+$$
 [-10,\;0].
-\]
+$$
 
-### 5.2 Measurement \(P_{13}\)
 
-\[
+### 5.2 Measurement $P_{13}$
+
+
+$$
 P_{13}
 =
 5(\theta_1-\theta_3)
 =
 -5\theta_3,
-\]
+$$
+
 
 so the second row is
 
-\[
+
+$$
 [0,\;-5].
-\]
+$$
 
-### 5.3 Measurement \(P_{23}\)
 
-\[
+### 5.3 Measurement $P_{23}$
+
+
+$$
 P_{23}
 =
 8(\theta_2-\theta_3)
 =
 8\theta_2-8\theta_3,
-\]
+$$
+
 
 so the third row is
 
-\[
-[8,\;-8].
-\]
 
-### 5.4 Injection \(P_2\)
+$$
+[8,\;-8].
+$$
+
+
+### 5.4 Injection $P_2$
 
 Bus 2 is connected to buses 1 and 3:
 
-\[
+
+$$
 P_2=P_{21}+P_{23}.
-\]
+$$
+
 
 Therefore,
 
-\[
+
+$$
 P_2
 =
 10(\theta_2-\theta_1)
 +
 8(\theta_2-\theta_3),
-\]
+$$
 
-and since \(\theta_1=0\),
 
-\[
+and since $\theta_1=0$,
+
+
+$$
 P_2
 =
 18\theta_2-8\theta_3.
-\]
+$$
+
 
 Thus the fourth row is
 
-\[
-[18,\;-8].
-\]
 
-### 5.5 Injection \(P_3\)
+$$
+[18,\;-8].
+$$
+
+
+### 5.5 Injection $P_3$
 
 Similarly,
 
-\[
+
+$$
 P_3=P_{31}+P_{32},
-\]
+$$
+
 
 so
 
-\[
+
+$$
 P_3
 =
 5(\theta_3-\theta_1)
 +
 8(\theta_3-\theta_2),
-\]
+$$
+
 
 which gives
 
-\[
+
+$$
 P_3
 =
 -8\theta_2+13\theta_3.
-\]
+$$
+
 
 Therefore, the fifth row is
 
-\[
+
+$$
 [-8,\;13].
-\]
+$$
+
 
 Combining the five measurements,
 
-\[
+
+$$
 \boxed{
 H=
 \begin{bmatrix}
@@ -322,17 +373,20 @@ H=
 -8 & 13
 \end{bmatrix}
 }
-\]
+$$
+
 
 and the measurement model becomes
 
-\[
+
+$$
 \boxed{
 z=Hx+e
 }
-\]
+$$
 
-where \(e\) is the measurement noise.
+
+where $e$ is the measurement noise.
 
 ---
 
@@ -340,35 +394,44 @@ where \(e\) is the measurement noise.
 
 The teaching model assumes independent zero-mean Gaussian noise:
 
-\[
+
+$$
 e\sim\mathcal N(0,R).
-\]
+$$
+
 
 For V0.1,
 
-\[
+
+$$
 \sigma=0.01
-\]
+$$
+
 
 and
 
-\[
+
+$$
 \boxed{
 R=\sigma^2 I.
 }
-\]
+$$
+
 
 Therefore, one synthetic measurement sample is generated by
 
-\[
+
+$$
 \boxed{
 z=Hx_{\text{true}}+e.
 }
-\]
+$$
+
 
 Without noise,
 
-\[
+
+$$
 Hx_{\text{true}}
 =
 \begin{bmatrix}
@@ -378,7 +441,8 @@ Hx_{\text{true}}
 -0.24\\
 -0.46
 \end{bmatrix}.
-\]
+$$
+
 
 Using the fixed random seed in the Notebook gives a reproducible noisy sample.
 
@@ -390,47 +454,57 @@ Using the fixed random seed in the Notebook gives a reproducible noisy sample.
 
 Because measurement noise prevents the five equations from being satisfied exactly by a single state vector, we estimate the state by minimizing the weighted residual:
 
-\[
+
+$$
 \boxed{
 \hat{x}
 =
 \arg\min_x
 (z-Hx)^T R^{-1}(z-Hx).
 }
-\]
+$$
+
 
 Define
 
-\[
+
+$$
 J(x)
 =
 (z-Hx)^TR^{-1}(z-Hx).
-\]
+$$
+
 
 Setting the gradient to zero gives
 
-\[
+
+$$
 \frac{\partial J(x)}{\partial x}=0,
-\]
+$$
+
 
 which yields the normal equation
 
-\[
+
+$$
 H^TR^{-1}H\hat{x}
 =
 H^TR^{-1}z.
-\]
+$$
 
-If \(H\) has full column rank,
 
-\[
+If $H$ has full column rank,
+
+
+$$
 \boxed{
 \hat{x}
 =
 (H^TR^{-1}H)^{-1}
 H^TR^{-1}z.
 }
-\]
+$$
+
 
 The implementation in `src/state_estimator.py` uses a linear solver rather than explicitly inverting the gain matrix.
 
@@ -440,35 +514,45 @@ The implementation in `src/state_estimator.py` uses a linear solver rather than 
 
 After estimating the state, the reconstructed measurement is
 
-\[
+
+$$
 H\hat{x}.
-\]
+$$
+
 
 The residual is
 
-\[
+
+$$
 \boxed{
 r=z-H\hat{x}.
 }
-\]
+$$
 
-Do not confuse the residual \(r\) with the original measurement noise \(e\):
 
-\[
+Do not confuse the residual $r$ with the original measurement noise $e$:
+
+
+$$
 e=z-Hx_{\text{true}},
-\]
+$$
+
 
 whereas
 
-\[
+
+$$
 r=z-H\hat{x}.
-\]
+$$
+
 
 The estimator absorbs part of the measurement noise into the estimated state, so generally
 
-\[
+
+$$
 r\neq e.
-\]
+$$
+
 
 ---
 
@@ -478,59 +562,73 @@ r\neq e.
 
 The conventional residual-based test statistic is
 
-\[
+
+$$
 \boxed{
 J=r^TR^{-1}r.
 }
-\]
+$$
+
 
 Under the assumptions of the linear Gaussian measurement model and a correctly specified covariance matrix, the normal residual statistic follows a chi-square distribution with
 
-\[
+
+$$
 \nu=m-n
-\]
+$$
+
 
 degrees of freedom.
 
 For this tutorial,
 
-\[
+
+$$
 m=5,\qquad n=2,
-\]
+$$
+
 
 so
 
-\[
+
+$$
 \nu=3.
-\]
+$$
+
 
 For a false-alarm significance level
 
-\[
+
+$$
 \alpha=0.05,
-\]
+$$
+
 
 the detection threshold is
 
-\[
+
+$$
 \boxed{
 \tau=
 F^{-1}_{\chi^2_3}(0.95)
 \approx7.815.
 }
-\]
+$$
+
 
 The detector uses
 
-\[
+
+$$
 \boxed{
 J>\tau
 \quad\Rightarrow\quad
 \text{Alarm}.
 }
-\]
+$$
 
-A normal sample can still exceed the threshold with probability approximately \(\alpha\). Therefore, “normal” does **not** mean that an alarm is mathematically impossible.
+
+A normal sample can still exceed the threshold with probability approximately $\alpha$. Therefore, “normal” does **not** mean that an alarm is mathematically impossible.
 
 ---
 
@@ -540,15 +638,18 @@ A normal sample can still exceed the threshold with probability approximately \(
 
 The first attack experiment intentionally uses a very simple perturbation:
 
-\[
+
+$$
 \boxed{
 z^a=z+a
 }
-\]
+$$
+
 
 with
 
-\[
+
+$$
 a=
 \begin{bmatrix}
 0.1\\
@@ -557,59 +658,71 @@ a=
 0\\
 0
 \end{bmatrix}.
-\]
+$$
 
-Only \(P_{12}\) is changed.
 
-This attack is intentionally naive: if \(P_{12}\) truly changed because the system state changed, other measurements depending on \(\theta_2\) should generally change as well. Changing only one measurement breaks the consistency imposed by \(H\).
+Only $P_{12}$ is changed.
+
+This attack is intentionally naive: if $P_{12}$ truly changed because the system state changed, other measurements depending on $\theta_2$ should generally change as well. Changing only one measurement breaks the consistency imposed by $H$.
 
 For the reproducible V0.1 example,
 
-\[
+
+$$
 J_{\text{normal}}\approx2.871,
-\]
+$$
+
 
 whereas
 
-\[
+
+$$
 J_{\text{naive}}\approx71.198.
-\]
+$$
+
 
 Thus,
 
-\[
+
+$$
 J_{\text{naive}}>\tau
-\]
+$$
+
 
 and the residual-based detector raises an alarm.
 
 ---
 
-# Part V. Model-consistent / structured FDI
+# Part V. Structured FDI
 
-## 11. Classical construction \(a=Hc\)
+## 11. Classical construction $a=Hc$
 
 Instead of arbitrarily modifying one measurement, choose a desired state-estimation offset
 
-\[
+
+$$
 c=
 \begin{bmatrix}
 0.005\\
 -0.004
 \end{bmatrix}.
-\]
+$$
+
 
 Construct the attack vector as
 
-\[
+
+$$
 \boxed{
 a=Hc.
 }
-\]
+$$
+
 
 For the 3-bus model,
 
-\[
+
+$$
 a=
 \begin{bmatrix}
 -0.05\\
@@ -618,48 +731,59 @@ a=
 0.122\\
 -0.092
 \end{bmatrix}.
-\]
+$$
+
 
 The attacked measurement is
 
-\[
+
+$$
 z^a=z+a=z+Hc.
-\]
+$$
+
 
 Because
 
-\[
+
+$$
 z\approx Hx,
-\]
+$$
+
 
 the attacked data have the model-consistent form
 
-\[
+
+$$
 z^a
 =
 H(x+c)+e.
-\]
+$$
+
 
 Therefore, in the ideal linear WLS model,
 
-\[
+
+$$
 \boxed{
 \hat{x}^a=\hat{x}+c.
 }
-\]
+$$
+
 
 In the V0.1 numerical experiment,
 
-\[
+
+$$
 \hat{x}^a-\hat{x}
 =
 \begin{bmatrix}
 0.005\\
 -0.004
 \end{bmatrix},
-\]
+$$
 
-exactly matching the selected state offset \(c\) up to numerical precision.
+
+exactly matching the selected state offset $c$ up to numerical precision.
 
 ---
 
@@ -667,33 +791,42 @@ exactly matching the selected state offset \(c\) up to numerical precision.
 
 The normal residual is
 
-\[
+
+$$
 r=z-H\hat{x}.
-\]
+$$
+
 
 After the attack,
 
-\[
+
+$$
 r^a
 =
 z^a-H\hat{x}^a.
-\]
+$$
+
 
 Using
 
-\[
+
+$$
 z^a=z+Hc
-\]
+$$
+
 
 and
 
-\[
+
+$$
 \hat{x}^a=\hat{x}+c,
-\]
+$$
+
 
 we obtain
 
-\[
+
+$$
 \begin{aligned}
 r^a
 &=
@@ -705,19 +838,23 @@ z-H\hat{x}\\
 &=
 r.
 \end{aligned}
-\]
+$$
+
 
 Hence,
 
-\[
+
+$$
 \boxed{
 r^a=r.
 }
-\]
+$$
+
 
 Consequently,
 
-\[
+
+$$
 \boxed{
 J^a
 =
@@ -727,31 +864,38 @@ r^TR^{-1}r
 =
 J.
 }
-\]
+$$
+
 
 The numerical experiment gives
 
-\[
+
+$$
 \|r^a-r\|_2
 \approx1.5\times10^{-16},
-\]
+$$
+
 
 which is numerical round-off error.
 
 Thus,
 
-\[
+
+$$
 J_{\text{structured}}
 \approx
 J_{\text{normal}}
 \approx2.871.
-\]
+$$
+
 
 Since
 
-\[
+
+$$
 2.871<7.815,
-\]
+$$
+
 
 the residual-only detector does not distinguish this attacked sample from the corresponding normal sample.
 
@@ -761,92 +905,118 @@ the residual-only detector does not distinguish this attacked sample from the co
 
 The WLS estimator can be written as
 
-\[
+
+$$
 \hat{x}=Kz,
-\]
+$$
+
 
 where
 
-\[
+
+$$
 K=
 (H^TR^{-1}H)^{-1}H^TR^{-1}.
-\]
+$$
+
 
 The residual can therefore be expressed as
 
-\[
+
+$$
 r=(I-HK)z.
-\]
+$$
+
 
 Define
 
-\[
+
+$$
 S=I-HK.
-\]
+$$
+
 
 Then
 
-\[
+
+$$
 r=Sz.
-\]
+$$
+
 
 Under an attack,
 
-\[
+
+$$
 r^a
 =
 S(z+a)
 =
 r+Sa.
-\]
+$$
+
 
 If
 
-\[
+
+$$
 a=Hc,
-\]
+$$
+
 
 then
 
-\[
+
+$$
 Sa=SHc.
-\]
+$$
 
-For full-column-rank \(H\),
 
-\[
+For full-column-rank $H$,
+
+
+$$
 KH=I,
-\]
+$$
+
 
 so
 
-\[
+
+$$
 SH=(I-HK)H=0.
-\]
+$$
+
 
 Therefore,
 
-\[
+
+$$
 \boxed{
 Sa=0
 }
-\]
+$$
+
 
 and
 
-\[
+
+$$
 \boxed{
 r^a=r.
 }
-\]
+$$
 
-Geometrically, the attack lies in the column space of \(H\):
 
-\[
+Geometrically, the attack lies in the column space of $H$:
+
+
+$$
 \boxed{
 a\in\operatorname{Col}(H).
 }
-\]
+$$
+
 
 This is the key mathematical reason why a model-consistent attack can evade this ideal residual-only detector.
 
@@ -854,7 +1024,7 @@ This is the key mathematical reason why a model-consistent attack can evade this
 
 # Part VI. Experiments
 
-## 14. Notebook 01 — DC State Estimation
+## 14. 01 — DC State Estimation
 
 Open:
 
@@ -864,12 +1034,12 @@ notebooks/01_dc_state_estimation.ipynb
 
 Learning objectives:
 
-- inspect \(H\);
-- inspect \(x_{\text{true}}\);
-- generate \(z=Hx+e\);
+- inspect $H$;
+- inspect $x_{\text{true}}$;
+- generate $z=Hx+e$;
 - compute the WLS estimate;
-- compare \(\hat{x}\) with \(x_{\text{true}}\);
-- inspect the residual and \(J\).
+- compare $\hat{x}$ with $x_{\text{true}}$;
+- inspect the residual and $J$.
 
 Expected reproducible values include approximately
 
@@ -880,7 +1050,7 @@ J = 2.871034
 
 ---
 
-## 15. Notebook 02 — Naive FDI Attack
+## 15. 02 — Naive FDI Attack
 
 Open:
 
@@ -890,9 +1060,11 @@ notebooks/02_naive_fdi_attack.ipynb
 
 The attack is
 
-\[
+
+$$
 a=[0.1,\;0,\;0,\;0,\;0]^T.
-\]
+$$
+
 
 Expected result:
 
@@ -905,7 +1077,7 @@ The naive perturbation is therefore detected by the residual test.
 
 ---
 
-## 16. Notebook 03 — Structured FDI Attack
+## 16. 03 — Structured FDI Attack
 
 Open:
 
@@ -915,15 +1087,19 @@ notebooks/03_stealthy_fdi_attack.ipynb
 
 Choose
 
-\[
+
+$$
 c=[0.005,\;-0.004]^T
-\]
+$$
+
 
 and construct
 
-\[
+
+$$
 a=Hc.
-\]
+$$
+
 
 Expected result:
 
@@ -936,7 +1112,7 @@ Attacked J ≈ 2.871034
 
 ---
 
-## 17. Notebook 04 — Bad-Data Detection
+## 17. 04 — Bad-Data Detection
 
 Open:
 
@@ -946,7 +1122,7 @@ notebooks/04_bad_data_detection.ipynb
 
 The three cases are compared under the same chi-square detector:
 
-| Case | \(J\) | Alarm |
+| Case | $J$ | Alarm |
 |---|---:|:---:|
 | Normal | 2.871034 | False |
 | Naive FDI | 71.198096 | True |
@@ -954,19 +1130,23 @@ The three cases are compared under the same chi-square detector:
 
 The result illustrates the central teaching point of V0.1:
 
-\[
+
+$$
 \boxed{
 \text{A residual-only BDD can detect inconsistent corruption,}
 }
-\]
+$$
+
 
 but under the ideal model assumptions,
 
-\[
+
+$$
 \boxed{
 a=Hc
 }
-\]
+$$
+
 
 can change the estimated state without changing the WLS residual.
 
@@ -1087,21 +1267,21 @@ Expected output:
 The tests verify:
 
 1. WLS exactly recovers the state for noiseless measurements;
-2. the structured \(a=Hc\) attack shifts the estimated state by \(c\);
-3. the structured attack preserves the residual and \(J\) to numerical precision.
+2. the structured $a=Hc$ attack shifts the estimated state by $c$;
+3. the structured attack preserves the residual and $J$ to numerical precision.
 
 ---
 
-# Part VIII. Source-code map
+# Part VIII. Source-code
 
 ## `src/grid_model.py`
 
 Defines:
 
-- the 3-bus measurement matrix \(H\);
-- the true state \(x_{\text{true}}\);
+- the 3-bus measurement matrix $H$;
+- the true state $x_{\text{true}}$;
 - measurement names;
-- covariance matrix \(R\);
+- covariance matrix $R$;
 - synthetic measurement generation.
 
 ## `src/state_estimator.py`
@@ -1118,7 +1298,7 @@ Implements:
 Implements:
 
 - a transparent single-measurement perturbation;
-- the model-consistent construction \(a=Hc\).
+- the model-consistent construction $a=Hc$.
 
 ## `src/demo.py`
 
@@ -1136,22 +1316,24 @@ The structured-attack result in this tutorial is an **idealized teaching result*
 
 The equality
 
-\[
+
+$$
 r^a=r
-\]
+$$
+
 
 depends on assumptions including:
 
 1. a linear DC measurement model;
-2. exact knowledge of \(H\);
+2. exact knowledge of $H$;
 3. consistent network topology and parameters;
-4. the ability to modify the measurements required by \(a=Hc\);
+4. the ability to modify the measurements required by $a=Hc$;
 5. a conventional residual-only detector;
 6. no additional trusted measurements, temporal models, or independent physics-based checks.
 
 In practical research, these assumptions may be relaxed. Examples include:
 
-- imperfect attacker knowledge \(\tilde H\neq H\);
+- imperfect attacker knowledge $\tilde H\neq H$;
 - limited measurement access;
 - protected measurements;
 - topology uncertainty;
@@ -1165,19 +1347,19 @@ These topics are intentionally left for later versions.
 
 ---
 
-# Part X. Suggested classroom questions
+# Part X. Suggested questions
 
 Students should be able to answer the following after V0.1:
 
 1. Why is the state dimension two rather than three?
-2. Why is \(H\) a \(5\times2\) matrix?
-3. Why are the residual \(r\) and measurement noise \(e\) not identical?
-4. Why does changing only \(P_{12}\) create physical inconsistency?
-5. What does \(a\in\operatorname{Col}(H)\) mean?
-6. Why does \(a=Hc\) imply \(\hat{x}^a-\hat{x}=c\)?
-7. Under which assumptions does \(r^a=r\) hold?
-8. Why does \(\alpha=0.05\) not mean that a normal sample can never trigger an alarm?
-9. What would happen if the attacker used an inaccurate matrix \(\tilde H\)?
+2. Why is $H$ a $5\times2$ matrix?
+3. Why are the residual $r$ and measurement noise $e$ not identical?
+4. Why does changing only $P_{12}$ create physical inconsistency?
+5. What does $a\in\operatorname{Col}(H)$ mean?
+6. Why does $a=Hc$ imply $\hat{x}^a-\hat{x}=c$?
+7. Under which assumptions does $r^a=r$ hold?
+8. Why does $\alpha=0.05$ not mean that a normal sample can never trigger an alarm?
+9. What would happen if the attacker used an inaccurate matrix $\tilde H$?
 10. What assumptions of this 3-bus model become unrealistic in a real control center?
 
 Additional exercises are available in:
